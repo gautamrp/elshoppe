@@ -19,9 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.shop.elshoppe.security.CustomUserDetailsService;
 import com.shop.elshoppe.security.RestAuthenticationEntryPoint;
 import com.shop.elshoppe.security.TokenAuthenticationFilter;
-import com.shop.elshoppe.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
-import com.shop.elshoppe.security.oauth2.OAuth2AuthenticationFailureHandler;
-import com.shop.elshoppe.security.oauth2.OAuth2AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -35,25 +32,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
-    @Autowired
-    private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
-
-    @Autowired
-    private OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
-
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
         return new TokenAuthenticationFilter();
-    }
-
-    /*
-      By default, Spring OAuth2 uses HttpSessionOAuth2AuthorizationRequestRepository to save
-      the authorization request. But, since our service is stateless, we can't save it in
-      the session. We'll save the request in a Base64 encoded cookie instead.
-    */
-    @Bean
-    public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
-        return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 
     @Override
@@ -107,24 +88,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/auth/**", "/oauth2/**")
                         .permitAll()
                     .antMatchers(HttpMethod.GET, "/items/**", "/item/**")
-                        .permitAll()
-                    .antMatchers(HttpMethod.DELETE, "/delete/**")
-                        .permitAll()                        
-                    .antMatchers(HttpMethod.POST, "/add")
-                        .permitAll()                        
-                    .anyRequest()
                         .authenticated()
-                    .and()
-                .oauth2Login()
-                    .authorizationEndpoint()
-                        .baseUri("/oauth2/authorize")
-                        .authorizationRequestRepository(cookieAuthorizationRequestRepository())
-                        .and()
-                    .redirectionEndpoint()
-                        .baseUri("/oauth2/callback/*")
-                        .and()
-                    .successHandler(oAuth2AuthenticationSuccessHandler)
-                    .failureHandler(oAuth2AuthenticationFailureHandler);
+                    .antMatchers(HttpMethod.DELETE, "/delete/**")
+                        .hasRole("ADMIN")
+                    .antMatchers(HttpMethod.POST, "/add")
+                    	.hasRole("ADMIN")
+                    .anyRequest()
+                        .authenticated();
 
         // Add our custom Token based authentication filter
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
