@@ -9,6 +9,7 @@ Sample JSON Input
 	"password": "secret"
 }
 
+=====================================
 
 http://localhost:8080/user/me
 Method Type = GET
@@ -35,6 +36,7 @@ Sample JSON Output
     ]
 }
 
+=====================================
 
 http://localhost:8080/item/{itemid}
 Method Type = GET
@@ -52,6 +54,7 @@ Sample JSON Output
     "itemId": 33
 }
 
+=====================================
 
 http://localhost:8080/items?page={pagenumber}
 Method Type = GET
@@ -69,6 +72,7 @@ Sample JSON Output
     "itemId": 33
 }
 
+=====================================
 
 http://localhost:8080/delete/24
 Method Type = DELETE
@@ -78,6 +82,7 @@ Sample Output
 
 true
 
+=====================================
 
 http://localhost:8080/add
 Method Type = PUT
