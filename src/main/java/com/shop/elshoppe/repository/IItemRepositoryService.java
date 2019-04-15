@@ -13,7 +13,7 @@ public interface IItemRepositoryService {
 	
 	public Item findById(Integer itemid);
 	
-	public void deleteBtId(Integer itemid);
+	public void deleteById(Integer itemid);
 	
 	public Page<Item> findAllByPage(Pageable pageable);
 	

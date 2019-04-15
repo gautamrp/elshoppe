@@ -26,7 +26,7 @@ public class ItemController{
 	
 	@RequestMapping(value="/items", method = RequestMethod.GET)
     public List<Item> getAllItems(@RequestParam("page") int page) {
-		logger.info("Inside ItemController getAllItems : Reterive all items");
+		logger.info("Inside ItemController getAllItems : Reterive items for page :" +page);
 		List<Item> items = itemService.findAllByPage(page);
         return items;
     }
